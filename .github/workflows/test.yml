@@ -1,0 +1,94 @@
+# GitHub Actions Workflow - Test
+# 
+# What does this do?
+# Every time code is pushed, this automatically runs tests.
+# If tests fail, the PR can't be merged.
+# 
+# This is like a safety net - catches bugs before they reach production.
+
+name: Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    # Matrix: Run tests on multiple Node versions to ensure compatibility
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+    
+    # Environment variables for tests
+    env:
+      DATABASE_URL: postgresql://cybervet:test_password@localhost:5432/cybervet_test
+      REDIS_URL: redis://localhost:6379/0
+      NODE_ENV: test
+      JWT_SECRET: test_secret
+
+    services:
+      # PostgreSQL database for tests
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: cybervet
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: cybervet_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      # Redis cache for tests
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      # Step 1: Checkout code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run type checking (TypeScript)
+      - name: Type check
+        run: npm run type-check
+
+      # Step 5: Run linting
+      - name: Lint code
+        run: npm run lint
+
+      # Step 6: Run tests with coverage report
+      - name: Run tests
+        run: npm run test:coverage
+
+      # Step 7: Upload coverage to Codecov (optional, shows test coverage badge)
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          fail_ci_if_error: false

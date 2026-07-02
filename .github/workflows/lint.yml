@@ -1,0 +1,52 @@
+# GitHub Actions Workflow - Lint & Code Quality
+#
+# What does this do?
+# Checks that code follows the project's style rules.
+# Examples:
+# - Unused variables (bad!)
+# - Missing semicolons (style)
+# - Inconsistent naming (style)
+# - No console.log() left in production code (debugging artifact)
+#
+# If linting fails, PR can't be merged.
+
+name: Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: ['20.x']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      # Run ESLint (checks TypeScript/JavaScript code)
+      - name: Lint TypeScript/JavaScript
+        run: npm run lint
+
+      # Run Prettier (checks code formatting)
+      - name: Check code formatting
+        run: npx prettier --check src/
+
+      # Run type checking
+      - name: Type check
+        run: npm run type-check

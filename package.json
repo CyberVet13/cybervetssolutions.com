@@ -1,0 +1,53 @@
+{
+  "name": "cybervetssolutions",
+  "version": "0.1.0",
+  "description": "AI-powered lead automation for real estate agents",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "test:watch": "npm run test:watch --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "setup": "npm install && npm run db:migrate",
+    "setup:dev": "npm install && docker-compose up -d && npm run db:migrate && npm run db:seed",
+    "db:migrate": "cd backend && npm run migrate",
+    "db:seed": "cd backend && npm run seed",
+    "db:check": "cd backend && npm run db:check",
+    "services:start": "cd services && docker-compose up -d",
+    "services:stop": "cd services && docker-compose down",
+    "services:logs": "cd services && docker-compose logs -f",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:build": "docker-compose up -d --build",
+    "docker:rebuild": "docker-compose down -v && docker-compose up -d --build",
+    "docker:ps": "docker-compose ps",
+    "docker:shell:backend": "docker-compose exec backend sh",
+    "docker:shell:frontend": "docker-compose exec frontend sh",
+    "docker:shell:db": "docker-compose exec postgres psql -U cybervet -d cybervet_dev",
+    "docker:logs:backend": "docker-compose logs -f backend",
+    "docker:logs:frontend": "docker-compose logs -f frontend",
+    "docker:logs:db": "docker-compose logs -f postgres",
+    "docker:migrate": "docker-compose exec backend npm run db:migrate",
+    "docker:seed": "docker-compose exec backend npm run db:seed",
+    "docker:test": "docker-compose exec backend npm test",
+    "docker:stats": "docker stats --format 'table {{.Container}}\\t{{.MemUsage}}\\t{{.CPUPerc}}'"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

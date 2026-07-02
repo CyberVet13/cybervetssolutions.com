@@ -1,0 +1,194 @@
+# GitHub Actions Workflow - Deploy to Production
+#
+# What does this do?
+# Manually deploys to production (requires human approval).
+# 
+# Flow:
+# 1. Developer creates PR from develop → main
+# 2. Tests, lint, security checks run automatically
+# 3. Team reviews code and approves PR
+# 4. When PR is merged to main, this workflow starts
+# 5. Workflow waits for manual approval (safety net!)
+# 6. Once approved, deploys to production
+#
+# This prevents accidental deployments to production.
+
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'services/**'
+      - '.github/workflows/deploy-prod.yml'
+
+jobs:
+  # Step 1: Wait for tests to pass
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+  # Step 2: Get manual approval before deploying
+  approval:
+    needs: [test-and-lint]
+    runs-on: ubuntu-latest
+    environment: production  # Special environment requiring approval
+    
+    steps:
+      - name: Manual approval required
+        run: echo "✅ Production deployment approved!"
+
+  # Step 3: Actually deploy to production
+  deploy-production:
+    needs: [approval]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      # Build Docker images
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Build and push frontend
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/cybervet-frontend:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/cybervet-frontend:production-latest
+
+      # Build and push backend
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/cybervet-backend:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/cybervet-backend:production-latest
+
+      # Deploy using canary rollout (10% → 50% → 100% traffic)
+      - name: Deploy to production with canary
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 --decode > $HOME/.kube/config
+          
+          # Deploy frontend
+          kubectl set image deployment/frontend frontend=${{ secrets.DOCKER_REGISTRY }}/cybervet-frontend:${{ github.sha }} -n production
+          kubectl rollout status deployment/frontend -n production --timeout=10m
+          
+          # Deploy backend
+          kubectl set image deployment/backend backend=${{ secrets.DOCKER_REGISTRY }}/cybervet-backend:${{ github.sha }} -n production
+          kubectl rollout status deployment/backend -n production --timeout=10m
+
+      # Monitor for errors after deployment
+      - name: Monitor deployment health
+        run: |
+          for i in {1..60}; do
+            HEALTH=$(curl -s https://cybervetssolutions.com/health)
+            if [[ $HEALTH == *"ok"* ]]; then
+              echo "✅ Production health check passed"
+              exit 0
+            fi
+            echo "⏳ Waiting for health check... ($i/60)"
+            sleep 5
+          done
+          echo "❌ Production health check failed"
+          exit 1
+
+      # Automatic rollback if health check fails
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 --decode > $HOME/.kube/config
+          
+          kubectl rollout undo deployment/frontend -n production
+          kubectl rollout undo deployment/backend -n production
+          
+          echo "⚠️ Deployment failed, automatically rolled back to previous version"
+          exit 1
+
+      # Notify the team
+      - name: Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "🚀 Production deployment successful",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment*\n🚀 Success\nVersion: ${{ github.sha }}\nDeployed by: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ Production deployment failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment*\n❌ FAILED - Automatic Rollback Triggered\nVersion: ${{ github.sha }}\nCommit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

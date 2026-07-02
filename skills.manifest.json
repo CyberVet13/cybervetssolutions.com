@@ -1,0 +1,364 @@
+# skills.manifest.json — Agent Skills Registry
+
+Configuration file that registers all available skills for Claude Code in this workspace.
+
+```json
+{
+  "skills": {
+    "planning": {
+      "office-hours": {
+        "name": "Office Hours (Problem Reframing)",
+        "description": "Reframe ideas: pain points, scope, risks, implementation strategies",
+        "trigger": "I want to build...",
+        "context": "Real estate lead management, market analysis, client communication",
+        "output": "Design doc, alternative approaches, risk assessment"
+      },
+      "plan": {
+        "name": "Specification Writer",
+        "description": "Write detailed executable specs: endpoints, schema, errors, tests",
+        "trigger": "Write the spec for...",
+        "context": "Turn designs into implementation specs",
+        "output": "Spec document, API endpoints, database schema, error cases"
+      },
+      "design-review": {
+        "name": "Design Auditor",
+        "description": "UX/API/architecture audit against best practices",
+        "trigger": "Review this design...",
+        "context": "Real estate SaaS patterns, usability, performance",
+        "output": "Design audit report, improvement suggestions"
+      },
+      "research": {
+        "name": "Research Agent",
+        "description": "Competitive analysis, pattern search, best practices",
+        "trigger": "Find best practices for...",
+        "context": "Real estate tech, AI automation, lead management",
+        "output": "Competitive matrix, best practice guide, recommendations"
+      }
+    },
+    "building": {
+      "build": {
+        "name": "Code Generator",
+        "description": "Implement features with tests and documentation",
+        "trigger": "Implement [feature]",
+        "context": "Write production-grade code, tests, documentation",
+        "output": "Code files, test files, updated docs, PR-ready commits"
+      },
+      "sprint-mode": {
+        "name": "Fast Builder",
+        "description": "Minimal ceremony, maximum velocity",
+        "trigger": "Build fast...",
+        "context": "Simple features, skip plan docs, atomic commits",
+        "output": "Code, tests, commits (no spec doc)"
+      },
+      "pair": {
+        "name": "Pair Programmer",
+        "description": "Real-time collaboration mode",
+        "trigger": "Help me code...",
+        "context": "Work together, suggest patterns, catch bugs",
+        "output": "Code + interactive feedback"
+      },
+      "refactor": {
+        "name": "Tech Debt Cleaner",
+        "description": "Architecture improvements, cleanup, test coverage",
+        "trigger": "Clean this up...",
+        "context": "Better code quality, maintainability, performance",
+        "output": "Refactored code, improved architecture, atomic commits"
+      }
+    },
+    "quality": {
+      "qa": {
+        "name": "QA Lead",
+        "description": "Live testing, edge case finding, bug fixes",
+        "trigger": "Test this feature",
+        "context": "Real app testing, find and fix bugs, regression tests",
+        "output": "Bug list, fixed code with tests"
+      },
+      "test-coverage": {
+        "name": "Test Gap Analyzer",
+        "description": "Identify untested code paths, generate tests",
+        "trigger": "Check test gaps",
+        "context": "Coverage analysis, critical path identification",
+        "output": "Coverage report, new test cases"
+      },
+      "performance": {
+        "name": "Performance Optimizer",
+        "description": "Baseline metrics, profiling, optimization",
+        "trigger": "Optimize [component]",
+        "context": "Frontend performance, API latency, database queries",
+        "output": "Performance baseline, profiling results, optimization plan"
+      },
+      "accessibility": {
+        "name": "A11Y Auditor",
+        "description": "WCAG 2.1 AA compliance, screen reader testing",
+        "trigger": "Audit a11y",
+        "context": "Accessibility standards, inclusive design",
+        "output": "A11Y audit report, ARIA recommendations"
+      }
+    },
+    "security": {
+      "security-audit": {
+        "name": "Security Officer",
+        "description": "OWASP Top 10 + STRIDE threat model",
+        "trigger": "Security check",
+        "context": "Real estate PII handling, compliance (GDPR, CCPA)",
+        "output": "Security audit report, vulnerability list, remediation plan"
+      },
+      "api-security": {
+        "name": "API Security Specialist",
+        "description": "Auth flows, rate limiting, input validation, CORS",
+        "trigger": "Secure the API",
+        "context": "API security best practices, auth patterns",
+        "output": "Security implementation, code changes"
+      },
+      "data-privacy": {
+        "name": "Privacy Compliance Officer",
+        "description": "GDPR, CCPA, PII handling, consent flows",
+        "trigger": "Privacy audit",
+        "context": "Real estate lead PII, data retention, encryption",
+        "output": "Privacy audit, compliance checklist, implementation guide"
+      },
+      "threat-model": {
+        "name": "Threat Modeler",
+        "description": "STRIDE analysis: Spoofing, Tampering, Repudiation, etc.",
+        "trigger": "What could go wrong?",
+        "context": "Adversarial thinking, attack surface analysis",
+        "output": "Threat model, risk matrix, mitigation strategies"
+      }
+    },
+    "operations": {
+      "ship": {
+        "name": "Release Engineer",
+        "description": "Merge PR, run tests, audit, deploy to staging",
+        "trigger": "Deploy this",
+        "context": "Automated deployment, safety checks",
+        "output": "Deployment to staging, verification"
+      },
+      "land-and-deploy": {
+        "name": "Production Deployer",
+        "description": "Production deployment, smoke tests, monitoring",
+        "trigger": "Go live",
+        "context": "Production infrastructure, canary deploys, rollback",
+        "output": "Production deployment, health verification"
+      },
+      "hotfix": {
+        "name": "Hotfix Handler",
+        "description": "Emergency mode: fast track with safety rails",
+        "trigger": "Fix prod bug",
+        "context": "Production incident, fast response needed",
+        "output": "Hotfix PR, production deployment"
+      },
+      "rollback": {
+        "name": "Rollback Manager",
+        "description": "Safe rollback, data integrity verification",
+        "trigger": "Revert that change",
+        "context": "Production incidents, database safety",
+        "output": "Rollback executed, verification, incident report"
+      }
+    },
+    "documentation": {
+      "docs": {
+        "name": "Documentation Writer",
+        "description": "Guides, README, troubleshooting, deployment",
+        "trigger": "Write docs for...",
+        "context": "Clear, actionable guides for developers and operators",
+        "output": "README, deployment guide, troubleshooting guide"
+      },
+      "api-docs": {
+        "name": "API Documentarian",
+        "description": "OpenAPI spec, examples, error codes",
+        "trigger": "Document this API",
+        "context": "API reference with examples, rate limits",
+        "output": "OpenAPI spec, API docs, code examples"
+      },
+      "runbook": {
+        "name": "Runbook Creator",
+        "description": "Incident response procedures, troubleshooting",
+        "trigger": "Create runbook for...",
+        "context": "Step-by-step ops procedures, escalation",
+        "output": "Runbook, troubleshooting guide, escalation matrix"
+      }
+    },
+    "debugging": {
+      "investigate": {
+        "name": "Investigator",
+        "description": "Root cause analysis, systematic debugging",
+        "trigger": "Debug this...",
+        "context": "Systematic problem solving, trace execution",
+        "output": "Root cause analysis, prevention plan"
+      },
+      "logs": {
+        "name": "Log Analyzer",
+        "description": "Parse logs, correlate events, extract timeline",
+        "trigger": "Analyze logs",
+        "context": "Production troubleshooting, pattern recognition",
+        "output": "Event timeline, anomaly detection, insights"
+      },
+      "trace": {
+        "name": "Request Tracer",
+        "description": "End-to-end request tracing, latency breakdown",
+        "trigger": "Trace this request",
+        "context": "Performance debugging, dependency analysis",
+        "output": "Request trace, latency breakdown, bottleneck identification"
+      }
+    },
+    "real-estate-domain": {
+      "lead-flow": {
+        "name": "Lead Lifecycle Designer",
+        "description": "Map lead workflows: capture → nurture → conversion",
+        "trigger": "Design lead workflow",
+        "context": "Real estate lead management, agent processes",
+        "output": "Lead workflow diagram, automation opportunities"
+      },
+      "mls-integration": {
+        "name": "MLS Integration Expert",
+        "description": "Connect to MLS data, normalize fields, handle updates",
+        "trigger": "Integrate with [MLS]",
+        "context": "MLS data sources, regional variations, sync strategy",
+        "output": "Integration implementation, data sync job"
+      },
+      "comp-analysis": {
+        "name": "Comparable Analysis Engine",
+        "description": "Automated CMA, valuation, trend detection",
+        "trigger": "Generate comps for...",
+        "context": "Real estate valuation, market analysis",
+        "output": "Comp analysis, valuation estimate, market insights"
+      },
+      "email-template": {
+        "name": "Real Estate Email Specialist",
+        "description": "Templates for follow-up, open house, price change",
+        "trigger": "Create template for...",
+        "context": "Email compliance (CAN-SPAM), personalization",
+        "output": "Email templates, A/B test variants"
+      },
+      "automation-audit": {
+        "name": "Workflow Automation Finder",
+        "description": "Identify manual workflows that can be automated",
+        "trigger": "Where can we automate?",
+        "context": "Real estate agent workflows, ROI prioritization",
+        "output": "Automation opportunities, impact assessment, prioritized list"
+      }
+    }
+  },
+  "rules": {
+    "mandatory": [
+      "Every feature ships with tests (target: ≥80% coverage)",
+      "Run security-audit before deploying to production",
+      "Commit messages follow convention (type(scope): description)",
+      "No hardcoded secrets in any file",
+      "Database queries use parameterized statements (no SQL injection)",
+      "PII (names, emails, phone) encrypted at rest, masked in logs",
+      "Atomic commits (one logical change per commit)",
+      "Update documentation when you ship code"
+    ],
+    "performance-targets": {
+      "api-p95-latency": "<200ms",
+      "page-load-tti": "<3s",
+      "database-query": "<100ms",
+      "test-coverage": "≥80%"
+    },
+    "security-gates": [
+      "OWASP Top 10 compliance",
+      "STRIDE threat model for critical flows",
+      "Input validation on all endpoints",
+      "Rate limiting on public APIs",
+      "HTTPS everywhere (or localhost)",
+      "Auth tokens with reasonable TTL (<24h)",
+      "PII encrypted at rest and in transit"
+    ]
+  },
+  "hooks": {
+    "pre-commit": [
+      "Run linter (eslint, pylint)",
+      "Run type checker (TypeScript, mypy)",
+      "Run tests (jest, pytest)"
+    ],
+    "pre-push": [
+      "All tests must pass",
+      "Coverage must be ≥80%",
+      "No console.log/print statements in production code"
+    ],
+    "pre-deploy": [
+      "Run security-audit",
+      "All tests pass on CI",
+      "No hardcoded secrets in diff",
+      "Performance benchmarks green"
+    ]
+  },
+  "workflow": {
+    "sprint-mode": [
+      "/office-hours (understand pain)",
+      "/plan (write spec)",
+      "/design-review (check design)",
+      "/build (implement with tests)",
+      "/qa (test edge cases)",
+      "/documentation (write guides)",
+      "/security-audit (compliance check)",
+      "/ship (deploy)"
+    ],
+    "fast-mode": [
+      "/sprint-mode (skip planning ceremony)",
+      "/build (implement)",
+      "/qa (quick smoke test)",
+      "/ship (deploy)"
+    ],
+    "incident-mode": [
+      "Assess severity + impact",
+      "/investigate (root cause)",
+      "/hotfix (quick patch)",
+      "/ship (production deploy)",
+      "Postmortem (prevention)"
+    ]
+  },
+  "integrations": {
+    "github": {
+      "auto-deploy-on-merge": "true",
+      "require-pr-review": "true",
+      "require-status-checks": ["tests", "security-audit", "coverage"]
+    },
+    "slack": {
+      "deployments": "#deployments",
+      "incidents": "#incidents",
+      "daily-standup": "#standup"
+    },
+    "monitoring": ["datadog", "sentry", "pagerduty"]
+  },
+  "version": "1.0.0",
+  "last-updated": "2026-07-01",
+  "maintainer": "@CyberVet13"
+}
+```
+
+---
+
+## How to Use This File
+
+1. **Claude Code reads this on startup** — Knows which skills are available
+2. **PR automation references this** — Required checks come from `hooks.pre-deploy`
+3. **Onboarding new developers** — Copy entire `skills` section, explain the flow
+4. **Add new skills** — Add entry to relevant category, update documentation
+
+## Adding a New Skill
+
+1. Pick a category (planning, building, quality, security, operations, documentation, debugging, real-estate-domain)
+2. Add entry:
+
+```json
+"my-new-skill": {
+  "name": "Human-Readable Name",
+  "description": "One-line description",
+  "trigger": "How user invokes it (e.g., 'Do X')",
+  "context": "Domain context",
+  "output": "What this skill produces"
+}
+```
+
+3. Document in CLAUDE.md under the same category
+4. Commit the change
+
+---
+
+**Last Updated**: 2026-07-01  
+**Total Skills**: 30+  
+**Categories**: 8  
+**Status**: Production-ready
+

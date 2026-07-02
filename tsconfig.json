@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    // What is TypeScript?
+    // TypeScript is a language that adds types to JavaScript.
+    // Instead of: let name = "John"
+    // You write:  let name: string = "John"
+    // This catches bugs before they happen!
+
+    // Target: What JavaScript version to compile to (ES2020 = modern browsers)
+    "target": "ES2020",
+    
+    // Module: How to organize code (ESM = modern standard)
+    "module": "ESNext",
+    
+    // Lib: What browser/Node APIs are available
+    "lib": ["ES2020"],
+
+    // Strict Mode: Enforce stricter type checking (recommended!)
+    "strict": true,
+    
+    // esModuleInterop: Allow mixing CommonJS and ES modules (needed for some packages)
+    "esModuleInterop": true,
+    
+    // skipLibCheck: Skip type checking of library files (faster)
+    "skipLibCheck": true,
+    
+    // forceConsistentCasingInFileNames: Enforce consistent file naming
+    "forceConsistentCasingInFileNames": true,
+    
+    // resolveJsonModule: Allow importing JSON files
+    "resolveJsonModule": true,
+    
+    // declaration: Generate .d.ts files (for libraries)
+    "declaration": true,
+    
+    // sourceMap: Generate source maps for debugging
+    "sourceMap": true,
+
+    // Aliases for cleaner imports (instead of ../../services, use @/services)
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@services/*": ["src/services/*"],
+      "@types/*": ["src/types/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  
+  // Include: Which files to check
+  "include": ["src/**/*"],
+  
+  // Exclude: Which files to skip
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}
