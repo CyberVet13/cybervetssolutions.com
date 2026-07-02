@@ -2,7 +2,13 @@
   "name": "@cybervet/frontend",
   "version": "0.1.0",
   "description": "React dashboard for CyberVets",
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "postcss.config.js",
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
