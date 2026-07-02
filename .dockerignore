@@ -1,0 +1,71 @@
+# Docker build context exclusions
+# These files/folders won't be copied into the Docker image
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log*
+yarn-error.log*
+.npm
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+dist
+build
+coverage
+.next
+out
+
+# Dependencies
+pnpm-lock.yaml
+yarn.lock
+
+# Environment files (use secrets management instead)
+.env
+.env.local
+.env.*.local
+
+# Kubernetes
+kubernetes/
+
+# Monitoring
+monitoring/
+
+# Testing
+testing/
+cypress/
+
+# Documentation
+docs/
+README.md
+CONTRIBUTING.md
+DECISIONS.md
+
+# Scripts
+scripts/
+
+# Misc
+.github/
+.editorconfig
+setup.sh
+SETUP.md
+QUICK_START.md
+COMPLETE_SETUP.md
+FOLDER_STRUCTURE.md
+CLAUDE.md
+AGENTS.md
+WORKFLOW.md
+WHATS_INCLUDED.md
+KLDY_*.md
+CHANGELOG.md

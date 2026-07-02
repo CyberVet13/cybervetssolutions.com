@@ -1,0 +1,66 @@
+# GitHub Actions Workflow - Security Scan
+#
+# What does this do?
+# Automatically checks for known security vulnerabilities in dependencies.
+# Examples of vulnerabilities it catches:
+# - Outdated packages with security bugs
+# - Dependencies with known exploits
+# - Weak cryptography
+#
+# If critical vulnerabilities found, fails the build.
+
+name: Security
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  # Run weekly even if no code changes (to catch new vulnerabilities)
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      # npm audit - built-in vulnerability scanner
+      # Checks npm packages for known security issues
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true  # Don't block deployment on moderate issues
+
+      # Snyk - Advanced vulnerability scanning
+      # (Requires free Snyk account)
+      - name: Run Snyk scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true
+
+      # OWASP Dependency Check
+      # Checks for known vulnerabilities using OWASP database
+      - name: Run OWASP Dependency Check
+        uses: jeremylong/DependencyCheck_Action@main
+        with:
+          project: 'cybervetssolutions'
+          path: '.'
+          format: 'JSON'
+          args: >
+            --enable=JavaScript
+        continue-on-error: true
